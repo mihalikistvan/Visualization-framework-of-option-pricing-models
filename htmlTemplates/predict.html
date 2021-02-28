@@ -1,0 +1,96 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<div class="col d-flex justify-content-center">
+  <div class="card col-md-6">
+    <div class="card-body">
+      <h3>Predict with manual inputs </h3>
+      <br>
+      <form action="/calculation" method="get">
+        <input type="hidden" id="predictionType" name="predictionType" value="manual">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="quoteDatetime">Quote date time</label>
+            <input type="date" class="form-control" id="quoteDatetime" name="quoteDatetime">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="expiration">Quote Expiration</label>
+            <input type="date" class="form-control" id="expiration" name="expiration">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="strikePrice">Strike price</label>
+            <input type="number" class="form-control" id="strikePrice" name="strikePrice">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="riskFreeRate">risk free rate</label>
+            <input type="number" class="form-control" id="riskFreeRate" name="riskFreeRate">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="askPrice">Ask price</label>
+            <input type="number" class="form-control" id="askPrice" name="askPrice">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="bidPrice">Bid price</label>
+            <input type="number" class="form-control" id="bidPrice" name="bidPrice">
+          </div>
+              <div class="form-group col-md-4">
+                <label for="volatility">Option volatility type</label>
+                <select id="volatility"  name="volatility"class="form-control">
+                  <option >Choose...</option>
+                  <option >VIX index</option>
+                  <option >Extreme volatility</option>
+                  <option >Historical volatility</option>
+                  <option >Garman Klaus</option>
+                </select>
+        </div>
+      </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Send data for prediction</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+  
+    </div>
+  </div>
+
+  <br><br>
+
+  <div class="col d-flex justify-content-center">
+    <div class="card col-md-6">
+      <div class="card-body">
+        <h3>Send ticker number</h3>
+        <br>
+        <form action="/calculation" method="get">
+         <input type="hidden" id="predictionType" name="predictionType" value="ticker">
+          <div class="form-group">
+            <label for="tickerNumber">Ticker number:</label>
+            <input type="text" class="form-control" id="tickerNumber" name="tickerNumber" placeholder="example: AAPL210305C00070000">
+          </div>
+          <br>
+          <button type="submit" class="btn btn-primary">Send ticker for prediction</button>
+        </form>
+  
+      </div>
+    </div>
+  </div>
+    
+      </div>
+    </div>
+
+{% include 'footer.html' %}
+</html>

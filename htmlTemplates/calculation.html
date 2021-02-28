@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<div class="col d-flex justify-content-center">
+  <div class="card col-md-6">
+    <div class="card-body">
+      <h3>Calculation </h3>
+      <br>
+      {% if predictionType == "ticker" %}
+        With ticker: {{tickerNumber}}
+      
+      {% elif predictionType == "manual" %}
+      {{responseMessage}}
+      Manual:
+      <br>
+      <ul> 
+      <li>responseMessage = {{responseMessage}}</li>
+      <li>volatility = {{volatility}}</li>
+      <li>bidPrice = {{bidPrice}}</li>
+      <li>askPrice = {{askPrice}}</li>
+      <li>riskFreeRate = {{riskFreeRate}}</li>
+      <li>strikePrice = {{strikePrice}}</li>
+      <li>expiration = {{expiration}}</li>
+      <li>quoteDatetime = {{quoteDatetime}}</li>
+      </ul>
+      {% else %}
+      {{responseMessage}}
+      {% endif %}
+    
+      </div>
+    </div>
+  </div>
+{% include 'footer.html' %}
+</html>
