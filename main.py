@@ -1,13 +1,24 @@
 from flask import Flask,render_template, request
 import os
 from functions.testCalculation import testCalculation
+from tensorflow import keras
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+model = keras.models.load_model('modelForFlask')
 templateDirectory = os.path.abspath('./htmlTemplates')
 
 app = Flask(__name__,template_folder=templateDirectory)
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    scale_test = pd.read_csv("predData.csv")
+    del scale_test['ending_ask']
+    prediction = model.predict(scale_test)
+    print (prediction)
+    prediction = prediction[0][0]
+    return render_template("index.html", prediction=prediction)
 
 @app.route('/predict')
 def predict():
