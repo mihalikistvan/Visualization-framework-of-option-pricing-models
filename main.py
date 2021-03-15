@@ -1,24 +1,18 @@
 from flask import Flask,render_template, request
 import os
-from functions.testCalculation import testCalculation
-from tensorflow import keras
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+from functions.testCalculation import predictFunc
+from yahoo_fin import options
 
-model = keras.models.load_model('modelForFlask')
+
 templateDirectory = os.path.abspath('./htmlTemplates')
 
 app = Flask(__name__,template_folder=templateDirectory)
 
+
 @app.route('/')
 def index():
-    scale_test = pd.read_csv("predData.csv")
-    del scale_test['ending_ask']
-    prediction = model.predict(scale_test)
-    print (prediction)
-    prediction = prediction[0][0]
-    return render_template("index.html", prediction=prediction)
+
+    return render_template("index.html")
 
 @app.route('/predict')
 def predict():
@@ -26,25 +20,44 @@ def predict():
 
 @app.route('/calculation', methods=['GET', 'POST'])
 def calculation():
-    
     predictionType = request.args.get("predictionType","")
+    model = request.args.get("modelID","")
+    
     
     if predictionType =="ticker":
-        responseMessage = testCalculation()
+        responseMessage =""
         tickerNumber = request.args.get("tickerNumber","")
-        return render_template("calculation.html",responseMessage=responseMessage, tickerNumber = tickerNumber,predictionType= predictionType)
+        option = options.get_options_chain(tickerNumber)
+        print (option)
+        
+        bidPrice = request.args.get("bidPrice",0)
+        askPrice = request.args.get("askPrice",0)
+        strikePrice = request.args.get("strikePrice",1)
+        expiration = request.args.get("expiration","2020-12-12")
+        quoteDatetime = request.args.get("quoteDatetime","2020-12-11")
+        underlying_bid = request.args.get("underlying_bid",0)
+        underlying_ask = request.args.get("underlying_ask",1)
+        moneyness = float(underlying_ask)/float(strikePrice)
+        
+        prediction = predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness,underlying_bid,underlying_ask,model)
+        
+        return render_template("calculation.html",responseMessage=responseMessage, tickerNumber = tickerNumber,predictionType= predictionType, option=option, prediction=prediction)
+    
     if predictionType =="manual":
-        responseMessage = testCalculation()
-        volatility = request.args.get("volatility","")
+        responseMessage=""
         bidPrice = request.args.get("bidPrice","")
         askPrice = request.args.get("askPrice","")
-        riskFreeRate = request.args.get("riskFreeRate","")
         strikePrice = request.args.get("strikePrice","")
         expiration = request.args.get("expiration","")
         quoteDatetime = request.args.get("quoteDatetime","")
+        underlying_bid = request.args.get("underlying_bid","")
+        underlying_ask = request.args.get("underlying_ask","")
+        moneyness = float(underlying_ask)/float(strikePrice)
 
-        return render_template("calculation.html",predictionType=predictionType, responseMessage=responseMessage,volatility = volatility,bidPrice = bidPrice,
-                                askPrice= askPrice, riskFreeRate= riskFreeRate, strikePrice=strikePrice, expiration= expiration,quoteDatetime= quoteDatetime)
+        prediction = predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness,underlying_bid,underlying_ask,model)
+       
+        return render_template("calculation.html",predictionType=predictionType, responseMessage=responseMessage,bidPrice = bidPrice,
+                                askPrice= askPrice, moneyness= moneyness, strikePrice=strikePrice, expiration= expiration,quoteDatetime= quoteDatetime,prediction=prediction)
     else:
         return render_template("calculation.html",responseMessage="No data given to predict with")
 @app.route('/about')

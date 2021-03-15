@@ -16,21 +16,24 @@
       <br>
       {% if predictionType == "ticker" %}
         With ticker: {{tickerNumber}}
-      
+        <hr>
+        Data: {{option}}
+        <hr>
+        The predicted endink ask price for the option is (!!!!!CURRENTLY THIS IS PLACEHOLDER FALSE DATA!!!!!!): {{prediction}}
+
       {% elif predictionType == "manual" %}
-      {{responseMessage}}
-      Manual:
-      <br>
+      Your prediction was done manually, the Parameters sent in are:
+      <br><br>
       <ul> 
-      <li>responseMessage = {{responseMessage}}</li>
-      <li>volatility = {{volatility}}</li>
       <li>bidPrice = {{bidPrice}}</li>
       <li>askPrice = {{askPrice}}</li>
-      <li>riskFreeRate = {{riskFreeRate}}</li>
+      <li>moneyness = {{moneyness}}</li>
       <li>strikePrice = {{strikePrice}}</li>
       <li>expiration = {{expiration}}</li>
       <li>quoteDatetime = {{quoteDatetime}}</li>
       </ul>
+      The predicted endink ask price for the option is (!!!!!CURRENTLY THIS IS PLACEHOLDER FALSE DATA!!!!!!): {{prediction}}
+
       {% else %}
       {{responseMessage}}
       {% endif %}

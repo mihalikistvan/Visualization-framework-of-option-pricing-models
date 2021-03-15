@@ -27,13 +27,17 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-4">
             <label for="strikePrice">Strike price</label>
             <input type="number" class="form-control" id="strikePrice" name="strikePrice">
           </div>
-          <div class="form-group col-md-6">
-            <label for="riskFreeRate">risk free rate</label>
-            <input type="number" class="form-control" id="riskFreeRate" name="riskFreeRate">
+          <div class="form-group col-md-4">
+            <label for="riskFreeRate">Underlying ask</label>
+            <input type="number" class="form-control" id="underlying_ask" name="underlying_ask">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="riskFreeRate">Underlying bid</label>
+            <input type="number" class="form-control" id="underlying_bid" name="underlying_bid">
           </div>
         </div>
         
@@ -47,13 +51,11 @@
             <input type="number" class="form-control" id="bidPrice" name="bidPrice">
           </div>
               <div class="form-group col-md-4">
-                <label for="volatility">Option volatility type</label>
-                <select id="volatility"  name="volatility"class="form-control">
-                  <option >Choose...</option>
-                  <option >VIX index</option>
-                  <option >Extreme volatility</option>
-                  <option >Historical volatility</option>
-                  <option >Garman Klaus</option>
+                <label for="modelID">Model version</label>
+                <select id="modelID"  name="modelID"class="form-control">
+                  <option>modelV1</option>
+                  <option>modelV2</option>
+                  <option>modelV3</option>
                 </select>
         </div>
       </div>
@@ -77,10 +79,20 @@
         <br>
         <form action="/calculation" method="get">
          <input type="hidden" id="predictionType" name="predictionType" value="ticker">
-          <div class="form-group">
+         <div class="form-row">
+          <div class="form-group col-md-6">
             <label for="tickerNumber">Ticker number:</label>
             <input type="text" class="form-control" id="tickerNumber" name="tickerNumber" placeholder="example: AAPL210305C00070000">
           </div>
+          <div class="form-group col-md-6">
+            <label for="modelID">Model version</label>
+            <select id="modelID"  name="modelID"class="form-control">
+              <option>modelV1</option>
+              <option>modelV2</option>
+              <option>modelV3</option>
+            </select>
+          </div>
+        </div>
           <br>
           <button type="submit" class="btn btn-primary">Send ticker for prediction</button>
         </form>
