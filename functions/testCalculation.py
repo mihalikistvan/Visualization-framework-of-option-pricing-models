@@ -23,6 +23,10 @@ def predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness
     toPredict.append(data,ignore_index=True)
     toPredict = pd.concat([toPredict, data], axis=1)
     scaler = MinMaxScaler(feature_range=(0,1))
+    notScaledBigDataframe = pd.read_csv('test_no_date.csv')
+    print (notScaledBigDataframe.head)
+    del notScaledBigDataframe['ending_ask']
+    toPredict = notScaledBigDataframe.append(toPredict,ignore_index=True)
     toPredictScale = scaler.fit_transform(toPredict)
     toPredict = pd.DataFrame(toPredictScale,columns=toPredict.columns.values)
     
@@ -32,5 +36,4 @@ def predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness
     model = keras.models.load_model(model)
     
     prediction = model.predict(toPredict)
-    
-    return prediction[0][0]
+    return prediction[len(prediction)-1][0]
