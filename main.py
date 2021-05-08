@@ -1,7 +1,10 @@
 from flask import Flask,render_template, request
 import os
-from functions.testCalculation import predictFunc
+from functions.testCalculation import predictFunc,blackScholes
 from yahoo_fin import options
+import numpy as np
+import pandas
+import matplotlib.pyplot as plt
 
 
 templateDirectory = os.path.abspath('./htmlTemplates')
@@ -21,43 +24,33 @@ def predict():
 @app.route('/calculation', methods=['GET', 'POST'])
 def calculation():
     predictionType = request.args.get("predictionType","")
-    model = request.args.get("modelID","")
-    
-    
-    if predictionType =="ticker":
-        responseMessage =""
-        tickerNumber = request.args.get("tickerNumber","")
-        option = options.get_options_chain(tickerNumber)
-        print (option)
-        
-        bidPrice = request.args.get("bidPrice",0)
-        askPrice = request.args.get("askPrice",0)
-        strikePrice = request.args.get("strikePrice",1)
-        expiration = request.args.get("expiration","2020-12-12")
-        quoteDatetime = request.args.get("quoteDatetime","2020-12-11")
-        underlying_bid = request.args.get("underlying_bid",0)
-        underlying_ask = request.args.get("underlying_ask",1)
-        moneyness = float(underlying_ask)/float(strikePrice)
-        
-        prediction = predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness,underlying_bid,underlying_ask,model)
-        
-        return render_template("calculation.html",responseMessage=responseMessage, tickerNumber = tickerNumber,predictionType= predictionType, option=option, prediction=prediction)
+    model = request.args.get("type","")
     
     if predictionType =="manual":
         responseMessage=""
-        bidPrice = request.args.get("bidPrice","")
-        askPrice = request.args.get("askPrice","")
-        strikePrice = request.args.get("strikePrice","")
+        bidPrice = float(request.args.get("bidPrice",""))
+        askPrice = float(request.args.get("askPrice",""))
+        strikePrice = float(request.args.get("strikePrice",""))
         expiration = request.args.get("expiration","")
         quoteDatetime = request.args.get("quoteDatetime","")
-        underlying_bid = request.args.get("underlying_bid","")
-        underlying_ask = request.args.get("underlying_ask","")
-        moneyness = float(underlying_ask)/float(strikePrice)
+        sp500 = float(request.args.get("sp500",""))
+        vix = float(request.args.get("vix",""))
+        riskFree = float(request.args.get("riskFree",""))
+        moneyness = float(sp500)/float(strikePrice)
+        volatility = float(request.args.get("volatility",""))
 
-        prediction = predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness,underlying_bid,underlying_ask,model)
-       
+        prediction = predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness,sp500,vix,riskFree,model)
+        plt.plot(prediction)   
+        try:
+            plt.savefig('static/images/new_plot.png')
+        except:
+            pass
+        bs = blackScholes(sp500, strikePrice, quoteDatetime,expiration, riskFree, volatility, model)
+        print ("BS",bs)
+        print (prediction[-1])
         return render_template("calculation.html",predictionType=predictionType, responseMessage=responseMessage,bidPrice = bidPrice,
-                                askPrice= askPrice, moneyness= moneyness, strikePrice=strikePrice, expiration= expiration,quoteDatetime= quoteDatetime,prediction=prediction)
+                                askPrice= askPrice, moneyness= moneyness, strikePrice=strikePrice, expiration= expiration,quoteDatetime= quoteDatetime,prediction=prediction[-1],
+                                 url='/static/images/new_plot.png', bs=bs)
     else:
         return render_template("calculation.html",responseMessage="No data given to predict with")
 @app.route('/about')

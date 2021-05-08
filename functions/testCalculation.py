@@ -4,36 +4,68 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 from sklearn.preprocessing import MinMaxScaler
+import numpy as np
+import scipy.stats as si
+import sympy as sy
+from sympy.stats import Normal, cdf
+import math
 
-
-def predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness,underlying_bid,underlying_ask,model):
+def predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness,sp500,vix,riskFree,model):
     
-    toPredict = pd.DataFrame(data={}, index=[0])
-    toPredict["bid"]=float(bidPrice)
-    toPredict["ask"]=float(askPrice)
-
-    toPredict["timeToMaturity"]=float((datetime.datetime.strptime(expiration, '%Y-%m-%d')-datetime.datetime.strptime(quoteDatetime, '%Y-%m-%d')).days)
-    toPredict["strike"]=float(strikePrice)
-    toPredict["moneyness"]=float(moneyness)
-    toPredict["underlying_bid"]=float(underlying_bid)
-    toPredict["underlying_ask"]=float(underlying_ask)
+    timeToMat = (datetime.datetime.strptime(expiration, '%Y-%m-%d')-datetime.datetime.strptime(quoteDatetime, '%Y-%m-%d')).days
     
-    data = {"sP500AdjClose": 2724.8701170000004,"sP500High":2724.98999,"sP500Low":2698.75,"sP500Close":2724.8701170000004, "statisticalVolatility":0.12496959699999999,"vixIndex":15.73,"extremeVolatility":0.045924,"garmanKlass":0.04021257,"riskFree":2.37}
-    data =pd.DataFrame(data=data,index=[0])
-    toPredict.append(data,ignore_index=True)
-    toPredict = pd.concat([toPredict, data], axis=1)
+    returnList=[]
+    
     scaler = MinMaxScaler(feature_range=(0,1))
-    notScaledBigDataframe = pd.read_csv('test_no_date.csv')
-    print (notScaledBigDataframe.head)
-    del notScaledBigDataframe['ending_ask']
-    toPredict = notScaledBigDataframe.append(toPredict,ignore_index=True)
-    toPredictScale = scaler.fit_transform(toPredict)
-    toPredict = pd.DataFrame(toPredictScale,columns=toPredict.columns.values)
-    
-    #ToDo: fix Scaling
-    
-    print (toPredict)
-    model = keras.models.load_model(model)
-    
+    notScaledBigDataframe = pd.read_csv('toScale.csv')
+    for day in range(timeToMat,0,-1):
+        
+        toPredict = pd.DataFrame(data={}, index=[0])
+        toPredict["currentBid"]=float(bidPrice)
+        toPredict["currentAsk"]=float(askPrice)
+        toPredict["expiration"]=float(day)
+        toPredict["strike"]=float(strikePrice)
+        toPredict["moneyness"]=float(moneyness)
+        toPredict["vixIndex"]=float(vix)
+        toPredict["sp500UnderlyingSpot"]=float(sp500)
+        toPredict["riskFree"]=float(riskFree)
+
+        if model == 'callModell':
+            toPredict["type"]=0.0
+        else:
+            toPredict["type"]=1.0
+
+        notScaledBigDataframe = notScaledBigDataframe.append(toPredict,ignore_index=True)
+        
+    del notScaledBigDataframe['endingAsk']
+    del notScaledBigDataframe['endingBid']
+    del notScaledBigDataframe['blackScholes']        
+
+    toPredictScale = scaler.fit_transform(notScaledBigDataframe)
+    toPredict = pd.DataFrame(toPredictScale,columns=notScaledBigDataframe.columns.values)
+
+    model = keras.models.load_model(str(model))
     prediction = model.predict(toPredict)
-    return prediction[len(prediction)-1][0]
+    
+    for i in range(len(notScaledBigDataframe)-timeToMat+1,len(notScaledBigDataframe)):
+        returnList.append( prediction[i-1][0])
+    
+    return (returnList)
+
+
+
+def blackScholes(sp500, strike, quoteDatetime,expiration, riskFree, volatility, model):
+    
+    
+    expiration=float((datetime.datetime.strptime(expiration, '%Y-%m-%d')-datetime.datetime.strptime(quoteDatetime, '%Y-%m-%d')).days)
+
+    val1 = (np.log(sp500 / strike) + (expiration + 0.5 * volatility ** 2) * expiration) / (volatility * np.sqrt(expiration))
+    val2 = (np.log(sp500 / strike) + (expiration - 0.5 * volatility ** 2) * expiration) / (volatility * np.sqrt(expiration))
+    
+    if model == 'callModell':
+        bs = (sp500 * si.norm.cdf(val1, 0.0, 1.0) - strike * np.exp(-riskFree * expiration) * si.norm.cdf(val2, 0.0, 1.0))
+    if model == 'putModell':
+        bs = (strike * np.exp(-riskFree * expiration) * si.norm.cdf(-val2, 0.0, 1.0) - sp500 * si.norm.cdf(-val1, 0.0, 1.0))
+    
+    return (bs)
+        

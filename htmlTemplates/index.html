@@ -14,11 +14,61 @@
       <div class="card-body">
         <h3>Index</h3>
         <hr>
-        Information about the models come here...
+        This web application is designed for predicting option prices at the expiration date.
+        <hr>
+        To gather data:
+        User needs:
+        <ul>
+          <li>Option strike price</li>
+          <li>Current date</li>
+          <li>Option expiration</li>
+          <li>Option ask/bid price</li>
+          <li>Sp&P500 adjusted close</li>
+          <li>Current US risk free rate</li>
+          <li>Vix index</li>
+          <li>(Additionally volatility percentage for Black-Scholes)</li>
+        </ul> 
+        These are all freel available information from the internet.
       </div>
     </div>
 </div>
-
-
+<br><br>
+<div class="col d-flex justify-content-center">
+  <div class="card col-md-6">
+    <div class="card-body">
+      <h3>My proposed Models:</h3>
+      <hr>
+      model = Sequential()<br>
+      model.add(Dense(50,activation='elu'))<br>
+      model.add(Dense(100,activation='elu'))<br>
+      model.add(Dense(200,activation='elu'))<br>
+      model.add(Dense(400,activation='elu'))<br>
+      model.add(Dense(400,activation='elu'))<br>
+      model.add(Dropout(0.001))<br>
+      model.add(Dense(200,activation='elu'))<br>
+      model.add(Dense(100,activation='elu'))<br>
+      model.add(Dense(50,activation='elu'))<br>
+      model.add(Dense(1,activation='elu'))<br>
+      <hr>
+      The models are optimized via the Nadam optimizer.<br>
+      In this web application, an end user is able to calculate both put and call prices.<br>
+      I've compiled and trained a seperate model based on the options type. When predicted the model automatically selects the appropriate model.
+      
+    </div>
+  </div>
+</div>
+<br><br>
+<div class="col d-flex justify-content-center">
+  <div class="card col-md-6">
+    <div class="card-body">
+      <h3>Black-Scholes</h3>
+      <hr>
+      For comparing performance, Black-Scholes is used for alternative calculation.<br>
+      The first universally adopted mathematical model was created by Fisher Black and Myron Scholes in 1973, and was later further developed by Robert Merton. This model, called the Black-Scholes model was initially created to evaluate the European option market put and call options prices [7].
+      The basic use of the model is to determine the price of an option using log-normal distributions probabilities to calculate volatility
+    </div>
+  </div>
+</div>
+<br><br>
 {% include 'footer.html' %}
 </html>

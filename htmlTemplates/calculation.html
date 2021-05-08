@@ -19,7 +19,7 @@
         <hr>
         Data: {{option}}
         <hr>
-        The predicted endink ask price for the option is (!!!!!CURRENTLY THIS IS PLACEHOLDER FALSE DATA!!!!!!): {{prediction}}
+        The predicted endink ask price for the option is:  <b> {{prediction}} USD</b> 
 
       {% elif predictionType == "manual" %}
       Your prediction was done manually, the Parameters sent in are:
@@ -32,7 +32,8 @@
       <li>expiration = {{expiration}}</li>
       <li>quoteDatetime = {{quoteDatetime}}</li>
       </ul>
-      The predicted endink ask price for the option is (!!!!!CURRENTLY THIS IS PLACEHOLDER FALSE DATA!!!!!!): {{prediction}}
+      The predicted endingAsk ask price for the option by the predicting model is: <b> {{prediction}} USD</b><hr>
+      The predicted endingAsk ask price for the option by Black Scholes is: <b> {{bs}} USD</b>
 
       {% else %}
       {{responseMessage}}
@@ -41,5 +42,16 @@
       </div>
     </div>
   </div>
+<br><br>
+  <div class="col d-flex justify-content-center">
+    <div class="card col-md-6">
+      <div class="card-body">
+        <h3>Visualization </h3>
+        <br>
+        <img src='/static/images/new_plot.png' alt="Chart" height="auto" width="100%"><br>
+        Visualization of ending ask price change, with time to maturity value decreasing to 0. First item is todays prediction of ending price, next is tomorrows and so on.
+        </div>
+      </div>
+    </div>
 {% include 'footer.html' %}
 </html>

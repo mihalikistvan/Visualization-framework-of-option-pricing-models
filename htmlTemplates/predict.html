@@ -32,12 +32,12 @@
             <input type="number" class="form-control" id="strikePrice" name="strikePrice">
           </div>
           <div class="form-group col-md-4">
-            <label for="riskFreeRate">Underlying ask</label>
-            <input type="number" class="form-control" id="underlying_ask" name="underlying_ask">
+            <label for="sp500">S&P 500</label>
+            <input type="number" class="form-control" id="sp500" name="sp500">
           </div>
           <div class="form-group col-md-4">
-            <label for="riskFreeRate">Underlying bid</label>
-            <input type="number" class="form-control" id="underlying_bid" name="underlying_bid">
+            <label for="riskFreeRate">VIX</label>
+            <input type="number" class="form-control" id="vix" name="vix">
           </div>
         </div>
         
@@ -51,13 +51,24 @@
             <input type="number" class="form-control" id="bidPrice" name="bidPrice">
           </div>
               <div class="form-group col-md-4">
-                <label for="modelID">Model version</label>
-                <select id="modelID"  name="modelID"class="form-control">
-                  <option>modelV1</option>
-                  <option>modelV2</option>
-                  <option>modelV3</option>
+                <label for="type">Model version</label>
+                <select id="type"  name="type"class="form-control">
+                  <option value="callModell">Call</option>
+                  <option value="putModell">Put</option>
                 </select>
         </div>
+      </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="volatility">Volatility for Black-Scholes</label>
+            <input type="number" class="form-control" id="volatility" name="volatility"  step=0.01 >
+          </div>
+          <div class="form-group col-md-4">
+            <label for="riskFree">Risk Free rate</label>
+            <input type="number" class="form-control" id="riskFree" name="riskFree"  step=0.01 >
+          </div>
+              
       </div>
         <br>
         <button type="submit" class="btn btn-primary">Send data for prediction</button>
@@ -71,38 +82,6 @@
   </div>
 
   <br><br>
-
-  <div class="col d-flex justify-content-center">
-    <div class="card col-md-6">
-      <div class="card-body">
-        <h3>Send ticker number</h3>
-        <br>
-        <form action="/calculation" method="get">
-         <input type="hidden" id="predictionType" name="predictionType" value="ticker">
-         <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="tickerNumber">Ticker number:</label>
-            <input type="text" class="form-control" id="tickerNumber" name="tickerNumber" placeholder="example: AAPL210305C00070000">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="modelID">Model version</label>
-            <select id="modelID"  name="modelID"class="form-control">
-              <option>modelV1</option>
-              <option>modelV2</option>
-              <option>modelV3</option>
-            </select>
-          </div>
-        </div>
-          <br>
-          <button type="submit" class="btn btn-primary">Send ticker for prediction</button>
-        </form>
-  
-      </div>
-    </div>
-  </div>
-    
-      </div>
-    </div>
 
 {% include 'footer.html' %}
 </html>
