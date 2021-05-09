@@ -1,7 +1,6 @@
 from flask import Flask,render_template, request
 import os
 from functions.testCalculation import predictFunc,blackScholes
-from yahoo_fin import options
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
@@ -46,8 +45,7 @@ def calculation():
         except:
             pass
         bs = blackScholes(sp500, strikePrice, quoteDatetime,expiration, riskFree, volatility, model)
-        print ("BS",bs)
-        print (prediction[-1])
+
         return render_template("calculation.html",predictionType=predictionType, responseMessage=responseMessage,bidPrice = bidPrice,
                                 askPrice= askPrice, moneyness= moneyness, strikePrice=strikePrice, expiration= expiration,quoteDatetime= quoteDatetime,prediction=prediction[-1],
                                  url='/static/images/new_plot.png', bs=bs)
