@@ -51,7 +51,7 @@ def predictFunc(bidPrice,askPrice,expiration,quoteDatetime,strikePrice,moneyness
     return (returnList)
 
 
-
+ 
 def blackScholes(sp500, strike, quoteDatetime,expiration, riskFree, volatility, model):
     
     
